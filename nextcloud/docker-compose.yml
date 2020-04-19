@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  nextcloud-postgres:
+    # https://hub.docker.com/_/postgres
+    image: postgres:12-alpine
+    container_name: nextcloud-postgres
+    restart: unless-stopped
+    volumes:
+      - ./docker-volumes/postgres/:/var/lib/postgresql/data:rw
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
+  nextcloud-redis:
+    # https://hub.docker.com/_/redis
+    image: redis:alpine
+    container_name: nextcloud-redis
+    restart: unless-stopped
+
+  nextcloud:
+    # https://hub.docker.com/_/nextcloud
+    image: nextcloud:18-apache
+    container_name: nextcloud
+    restart: unless-stopped
+    depends_on:
+      - nextcloud-postgres
+      - nextcloud-redis
+    volumes:
+      - ./docker-volumes/nextcloud/html/:/var/www/html/:rw
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    environment:
+      - NEXTCLOUD_ADMIN_USER=${NEXTCLOUD_ADMIN_USER}
+      - NEXTCLOUD_ADMIN_PASSWORD=${NEXTCLOUD_ADMIN_PASSWORD}
+      - POSTGRES_HOST=nextcloud-postgres
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - NEXTCLOUD_HOSTNAME=${NEXTCLOUD_DOMAIN}
+      - NEXTCLOUD_TRUSTED_DOMAINS=${NEXTCLOUD_DOMAIN} localhost
+      - REDIS_HOST=nextcloud-redis
+    ports:
+      - 80:80
+
+
+
+
