@@ -7,6 +7,9 @@ pull: ## Pull service images
 	docker-compose pull
 
 up: ## Start containers in the background and display logs
+	mkdir -p ./docker-volumes/letsencrypt/
+	touch ./docker-volumes/letsencrypt/acme.json
+	chmod 600 ./docker-volumes/letsencrypt/acme.json
 	docker-compose up -d
 	$(MAKE) logs
 

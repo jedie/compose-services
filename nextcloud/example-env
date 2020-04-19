@@ -1,6 +1,11 @@
+TRAEFIK_VIRTUAL_HOST=traefik.example.tld
+
+LETSENCRYPT_EMAIL=webmaster@nextcloud.example.tld
+
 NEXTCLOUD_DOMAIN=nextcloud.example.tld
 NEXTCLOUD_ADMIN_USER=nextcloud
 NEXTCLOUD_ADMIN_PASSWORD=nextcloud
+
 POSTGRES_DB=nextcloud
 POSTGRES_USER=nextcloud
 POSTGRES_PASSWORD=nextcloud

@@ -1,6 +1,45 @@
 version: '3'
 
 services:
+
+  traefik:
+    # https://hub.docker.com/_/traefik
+    image: traefik:latest
+    container_name: nextcloud-traefik
+    restart: unless-stopped
+    command:
+      - --log.level=DEBUG
+      - --api.insecure=true
+      - --api.dashboard=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.myresolver.acme.tlschallenge=true
+      - --certificatesresolvers.myresolver.acme.email=${LETSENCRYPT_EMAIL}
+      - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080
+    volumes:
+      - ./docker-volumes/letsencrypt/:/letsencrypt/:rw
+      - /.basic_auth:/.basic_auth:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`${TRAEFIK_VIRTUAL_HOST}`)"
+      - "traefik.http.routers.api.service=api@internal"
+      - "traefik.http.routers.api.entrypoints=https"
+      - "traefik.http.routers.api.tls=true"
+      - "traefik.http.routers.api.tls.certresolver=le"
+      - "traefik.http.routers.api.middlewares=auth"
+      - "traefik.http.middlewares.test-auth.basicauth.usersfile=/.basic_auth"
+      # redirect to https:
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=secure"
+      - "traefik.http.routers.redirect-https.rule=hostregexp(`{host:.+}`)"
+      - "traefik.http.routers.redirect-https.entrypoints=insecure"
+      - "traefik.http.routers.redirect-https.middlewares=redirect-to-https"
+
   nextcloud-postgres:
     # https://hub.docker.com/_/postgres
     image: postgres:12-alpine
@@ -27,6 +66,7 @@ services:
     container_name: nextcloud
     restart: unless-stopped
     depends_on:
+      - traefik
       - nextcloud-postgres
       - nextcloud-redis
     volumes:
@@ -43,9 +83,12 @@ services:
       - NEXTCLOUD_HOSTNAME=${NEXTCLOUD_DOMAIN}
       - NEXTCLOUD_TRUSTED_DOMAINS=${NEXTCLOUD_DOMAIN} localhost
       - REDIS_HOST=nextcloud-redis
-    ports:
-      - 80:80
-
-
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nextcloud.entrypoints=insecure"
+      - "traefik.http.routers.nextcloud.rule=Host(`${NEXTCLOUD_DOMAIN}`)"
+      - "traefik.http.routers.nextcloud.tls=true"
+      - "traefik.http.routers.nextcloud.tls.certresolver=le"
+      - "traefik.http.services.nextcloud.loadbalancer.server.port=80"
 
 

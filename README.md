@@ -9,9 +9,17 @@ Docker compose services
 e.g.:
 
 ```bash
+# install htpasswd:
+~$ sudo apt install apache2-utils
+
 ~$ git clone https://github.com/jedie/compose-services.git
 ~$ cd compose-services/nextcloud
 compose-services/nextcloud$ cp example-env .env
+
+# Generate basic auth credentials for traefik:
+compose-services/nextcloud$ htpasswd .basic_auth admin
+
+# Start containers
 compose-services/nextcloud$ make up
 compose-services/nextcloud$ make
 help                 List all commands
@@ -107,6 +115,9 @@ see: https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
 or just:
 ```bash
 $ sudo apt install docker.io docker-compose
+$ sudo usermod -aG docker ${USER}
+$ sudo systemctl status docker
+$ docker --version
 ```
 
 
