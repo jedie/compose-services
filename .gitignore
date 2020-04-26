@@ -1,2 +1,3 @@
 .*
-docker-volumes
+!.env-example
+poetry.lock
