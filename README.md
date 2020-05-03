@@ -42,6 +42,12 @@ PasswordAuthentication no
 ~# journalctl -f -u ssh
 ```
 
+
+To setup a minimal Ubuntu 20.04 server, that can "only" run docker-compose, use this script:
+
+* ubuntu_20_04_setup.sh
+
+
 add a normal user:
 ```bash
 ~# export USERNAME=example
