@@ -4,7 +4,14 @@
 
 prepare this:
 
-* install poetry and create virtualenv: `make install`
+* [install poetry](https://python-poetry.org/docs/#installation) e.g.:
+```bash
+~$ sudo apt install python3-pip
+~$ pip3 install -U pip --user
+~$ pip3 install -U poerty --user
+```
+
+* create virtualenv: `make install`
 * copy `.env-example` to `.env` and setup values
 * startup a server/node/vm with:
   * SSH access with Public-Key authentication
