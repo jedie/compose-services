@@ -43,7 +43,9 @@ nodes: check-poetry ## BundleWrap - List nodes
 nextcloud-uptime: ## Just start "uptime" on nextcloud node (for connection test)
 	poetry run bw -a run nextcloud "uptime"
 
-nextcloud-apply: ## Setup "nextcloud" node via bundlewrap
+nextcloud-dist-upgrade: ## Run apt dist-upgrade on nextcloud host
+	ssh nextcloud 'sudo apt update && sudo apt dist-upgrade'
+
 nextcloud-apply: .secrets.cfg ## Setup "nextcloud" node via bundlewrap
 	poetry run bw apply nextcloud
 
