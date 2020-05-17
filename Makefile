@@ -34,6 +34,9 @@ install-poetry: ## install or update poetry
 install: check-poetry ## install via poetry
 	poetry install
 
+.secrets.cfg:
+	python3 scripts/secrets_cfg.py
+
 nodes: check-poetry ## BundleWrap - List nodes
 	poetry run bw nodes
 
@@ -41,9 +44,10 @@ nextcloud-uptime: ## Just start "uptime" on nextcloud node (for connection test)
 	poetry run bw -a run nextcloud "uptime"
 
 nextcloud-apply: ## Setup "nextcloud" node via bundlewrap
+nextcloud-apply: .secrets.cfg ## Setup "nextcloud" node via bundlewrap
 	poetry run bw apply nextcloud
 
-nextcloud-apply-debug: ## Setup "nextcloud" node via bundlewrap (with debug output)
+nextcloud-apply-debug: .secrets.cfg ## Setup "nextcloud" node via bundlewrap (with debug output)
 	poetry run bw --debug apply nextcloud
 
 nextcloud-pull: ## Pull nextcloud images
