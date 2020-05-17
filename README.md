@@ -68,6 +68,8 @@ Setup server via bundlewrap:
 compose-services$ make nextcloud-apply
 ```
 
+Maybe after first "apply" a reboot may be needed for changes to take effect. (e.g.: setup docker usergroups)  
+
 Update docker images:
 ```bash
 compose-services$ make nextcloud-pull
