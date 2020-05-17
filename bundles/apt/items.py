@@ -25,10 +25,10 @@ to_uninstall = manual_packages - needed_packages
 if to_install or to_uninstall:
     print('To install:', to_install)
     print('To uninstall:', to_uninstall)
-    action_needed = '/usr/bin/false'
+    action_needed = '/bin/false'
 else:
     print('\nNo install/uninstall needed, ok')
-    action_needed = '/usr/bin/true'
+    action_needed = '/bin/true'
 
 
 actions = {
